@@ -30,10 +30,10 @@
             margin-right: 5px;
         }
         .machine-btn {
-            width: 160px; /* Dobrou a largura */
-            height: 50px; /* Dobrou a altura */
+            width: 320px; /* Dobrou a largura novamente */
+            height: 100px; /* Dobrou a altura novamente */
             margin-bottom: 20px;
-            font-size: 16px; /* Ajusta o tamanho da fonte */
+            font-size: 20px; /* Ajusta o tamanho da fonte */
         }
         #btn-cl01 { background-color: #FF5733; } /* Vermelho */
         #btn-cl02 { background-color: #33C1FF; } /* Azul */
@@ -142,7 +142,12 @@
 
             updateTable();
 
-            // Bloqueia novamente os campos de entrada
+            // Limpa os campos de entrada e bloqueia novamente
+            document.getElementById('cycles').value = '';
+            document.getElementById('turns').value = '';
+            document.getElementById('cuts').value = '';
+            document.getElementById('piecesRemoved').value = '';
+
             document.getElementById('cycles').disabled = true;
             document.getElementById('turns').disabled = true;
             document.getElementById('cuts').disabled = true;
