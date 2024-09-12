@@ -24,12 +24,23 @@
         }
         button {
             padding: 10px 20px;
-            background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
+            margin-right: 5px;
         }
-        button:hover {
+        .machine-btn {
+            width: 80px;
+            margin-bottom: 20px;
+        }
+        #btn-cl01 { background-color: #FF5733; } /* Vermelho */
+        #btn-cl02 { background-color: #33C1FF; } /* Azul */
+        #btn-cl03 { background-color: #33FF57; } /* Verde */
+        #btn-cl04 { background-color: #FFC300; } /* Amarelo */
+        .calc-btn {
+            background-color: #4CAF50;
+        }
+        .calc-btn:hover {
             background-color: #45a049;
         }
         .result {
@@ -53,30 +64,42 @@
 </head>
 <body>
     <h2>Calculadora de Ciclos e Voltas</h2>
+
+    <!-- Botões das máquinas -->
+    <div>
+        <button id="btn-cl01" class="machine-btn" onclick="enableInputs('CL-01')">CL-01</button>
+        <button id="btn-cl02" class="machine-btn" onclick="enableInputs('CL-02')">CL-02</button>
+        <button id="btn-cl03" class="machine-btn" onclick="enableInputs('CL-03')">CL-03</button>
+        <button id="btn-cl04" class="machine-btn" onclick="enableInputs('CL-04')">CL-04</button>
+    </div>
+
+    <!-- Campos de entrada -->
     <div class="input-group">
         <label for="cycles">Quantidade de Ciclos:</label>
-        <input type="number" id="cycles" min="0">
+        <input type="number" id="cycles" min="0" disabled>
     </div>
     <div class="input-group">
         <label for="turns">Quantidade de Voltas:</label>
-        <input type="number" id="turns" min="0">
+        <input type="number" id="turns" min="0" disabled>
     </div>
     <div class="input-group">
         <label for="cuts">Número de Corte:</label>
-        <input type="number" id="cuts" min="0">
+        <input type="number" id="cuts" min="0" disabled>
     </div>
     <div class="input-group">
         <label for="piecesRemoved">Quantidade de Peças Retiradas:</label>
-        <input type="number" id="piecesRemoved" min="0">
+        <input type="number" id="piecesRemoved" min="0" disabled>
     </div>
-    <button onclick="calculateAndSave()">Calcular</button>
+    <button class="calc-btn" onclick="calculateAndSave()" disabled id="calculate-btn">Calcular</button>
     
     <div class="result" id="result"></div>
 
+    <!-- Tabela de registros -->
     <table id="recordsTable">
         <thead>
             <tr>
                 <th>Data e Hora</th>
+                <th>Nome da Máquina</th>
                 <th>Quantidade de Ciclos</th>
                 <th>Quantidade de Voltas</th>
                 <th>Número de Corte</th>
@@ -92,6 +115,19 @@
     <script>
         // Array para armazenar os registros
         const records = [];
+        let selectedMachine = '';
+
+        function enableInputs(machine) {
+            // Salva o nome da máquina selecionada
+            selectedMachine = machine;
+
+            // Habilita os campos de entrada e o botão "Calcular"
+            document.getElementById('cycles').disabled = false;
+            document.getElementById('turns').disabled = false;
+            document.getElementById('cuts').disabled = false;
+            document.getElementById('piecesRemoved').disabled = false;
+            document.getElementById('calculate-btn').disabled = false;
+        }
 
         function calculateAndSave() {
             // Obtendo os valores de entrada
@@ -108,7 +144,7 @@
 
             // Registrando a data atual e as informações
             const date = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
-            records.push({ date, cycles, turns, cuts, piecesRemoved, totalPieces });
+            records.push({ date, machine: selectedMachine, cycles, turns, cuts, piecesRemoved, totalPieces });
 
             // Atualizando a tabela de registros
             updateTable();
@@ -121,20 +157,21 @@
             records.forEach(record => {
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = record.date;
-                row.insertCell(1).textContent = record.cycles;
-                row.insertCell(2).textContent = record.turns;
-                row.insertCell(3).textContent = record.cuts;
-                row.insertCell(4).textContent = record.piecesRemoved;
-                row.insertCell(5).textContent = record.totalPieces;
+                row.insertCell(1).textContent = record.machine;
+                row.insertCell(2).textContent = record.cycles;
+                row.insertCell(3).textContent = record.turns;
+                row.insertCell(4).textContent = record.cuts;
+                row.insertCell(5).textContent = record.piecesRemoved;
+                row.insertCell(6).textContent = record.totalPieces;
             });
         }
 
         function downloadCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,Data e Hora,Quantidade de Ciclos,Quantidade de Voltas,Número de Corte,Quantidade de Peças Retiradas,Quantidade de Peças\n";
+            let csvContent = "data:text/csv;charset=utf-8,Data e Hora,Nome da Máquina,Quantidade de Ciclos,Quantidade de Voltas,Número de Corte,Quantidade de Peças Retiradas,Quantidade de Peças\n";
 
             // Convertendo os registros para formato CSV
             records.forEach(record => {
-                const row = `${record.date},${record.cycles},${record.turns},${record.cuts},${record.piecesRemoved},${record.totalPieces}\n`;
+                const row = `${record.date},${record.machine},${record.cycles},${record.turns},${record.cuts},${record.piecesRemoved},${record.totalPieces}\n`;
                 csvContent += row;
             });
 
