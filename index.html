@@ -30,15 +30,15 @@
             margin-right: 5px;
         }
         .machine-btn {
-            width: 272px; /* Reduziu em 15% a largura */
-            height: 85px; /* Reduziu em 15% a altura */
+            width: 272px;
+            height: 85px;
             margin-bottom: 20px;
-            font-size: 20px; /* Tamanho da fonte */
+            font-size: 20px;
         }
-        #btn-cl01 { background-color: #FF5733; } /* Vermelho */
-        #btn-cl02 { background-color: #33C1FF; } /* Azul */
-        #btn-cl03 { background-color: #33FF57; } /* Verde */
-        #btn-cl04 { background-color: #FFC300; } /* Amarelo */
+        #btn-cl01 { background-color: #FF5733; }
+        #btn-cl02 { background-color: #33C1FF; }
+        #btn-cl03 { background-color: #33FF57; }
+        #btn-cl04 { background-color: #FFC300; }
         .calc-btn {
             background-color: #4CAF50;
         }
@@ -67,7 +67,6 @@
 <body>
     <h2>Calculadora de Ciclos e Voltas</h2>
 
-    <!-- Botões das máquinas -->
     <div>
         <button id="btn-cl01" class="machine-btn" onclick="enableInputs('CL-01')">CL-01</button>
         <button id="btn-cl02" class="machine-btn" onclick="enableInputs('CL-02')">CL-02</button>
@@ -75,7 +74,6 @@
         <button id="btn-cl04" class="machine-btn" onclick="enableInputs('CL-04')">CL-04</button>
     </div>
 
-    <!-- Campos de entrada -->
     <div class="input-group">
         <label for="cycles">Quantidade de Ciclos:</label>
         <input type="number" id="cycles" min="0" disabled>
@@ -96,7 +94,6 @@
     
     <div class="result" id="result"></div>
 
-    <!-- Tabela de registros -->
     <table id="recordsTable">
         <thead>
             <tr>
@@ -115,8 +112,13 @@
     <button onclick="downloadCSV()">Download CSV</button>
 
     <script>
-        const records = [];
+        let records = [];
         let selectedMachine = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadRecords();  // Carregar registros salvos ao carregar a página
+            updateTable();
+        });
 
         function enableInputs(machine) {
             selectedMachine = machine;
@@ -134,15 +136,14 @@
             const piecesRemoved = parseInt(document.getElementById('piecesRemoved').value) || 0;
 
             const totalPieces = (cycles * turns * cuts) - piecesRemoved;
-            
             document.getElementById('result').textContent = `Quantidade de Peças: ${totalPieces}`;
 
             const date = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }).replace(",", " ");
             records.push({ date, machine: selectedMachine, cycles, turns, cuts, piecesRemoved, totalPieces });
 
+            saveRecords();  // Salva os registros no localStorage
             updateTable();
 
-            // Limpa os campos de entrada e bloqueia novamente
             document.getElementById('cycles').value = '';
             document.getElementById('turns').value = '';
             document.getElementById('cuts').value = '';
@@ -186,6 +187,17 @@
             link.setAttribute("download", `registros_${currentDate}.csv`);
             document.body.appendChild(link);
             link.click();
+        }
+
+        function saveRecords() {
+            localStorage.setItem('records', JSON.stringify(records));
+        }
+
+        function loadRecords() {
+            const savedRecords = localStorage.getItem('records');
+            if (savedRecords) {
+                records = JSON.parse(savedRecords);
+            }
         }
     </script>
 </body>
