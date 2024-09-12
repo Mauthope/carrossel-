@@ -160,6 +160,9 @@
             const tableBody = document.getElementById('recordsTable').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = "";
 
+            // Ordena os registros por data de forma decrescente
+            records.sort((a, b) => new Date(b.date) - new Date(a.date));
+
             records.forEach(record => {
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = record.date;
