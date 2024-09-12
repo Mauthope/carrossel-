@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Ciclos e Voltas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Calculadora de Ciclos e Voltas</h2>
+    <div class="input-group">
+        <label for="cycles">Quantidade de Ciclos:</label>
+        <input type="number" id="cycles" min="0">
+    </div>
+    <div class="input-group">
+        <label for="turns">Quantidade de Voltas:</label>
+        <input type="number" id="turns" min="0">
+    </div>
+    <div class="input-group">
+        <label for="piecesRemoved">Quantidade de Peças Retiradas:</label>
+        <input type="number" id="piecesRemoved" min="0">
+    </div>
+    <button onclick="calculateAndSave()">Calcular</button>
+    
+    <div class="result" id="result"></div>
+
+    <button onclick="downloadCSV()">Download CSV</button>
+
+    <script>
+        // Array para armazenar os registros
+        const records = [];
+
+        function calculateAndSave() {
+            // Obtendo os valores de entrada
+            const cycles = parseInt(document.getElementById('cycles').value) || 0;
+            const turns = parseInt(document.getElementById('turns').value) || 0;
+            const piecesRemoved = parseInt(document.getElementById('piecesRemoved').value) || 0;
+
+            // Calculando a quantidade de peças
+            const totalPieces = (cycles * turns) - piecesRemoved;
+            
+            // Exibindo o resultado
+            document.getElementById('result').textContent = `Quantidade de Peças: ${totalPieces}`;
+
+            // Registrando a data atual e as informações
+            const date = new Date().toLocaleString();
+            records.push({ date, cycles, turns, piecesRemoved, totalPieces });
+        }
+
+        function downloadCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,Data,Quantidade de Ciclos,Quantidade de Voltas,Quantidade de Peças Retiradas,Quantidade de Peças\n";
+
+            // Convertendo os registros para formato CSV
+            records.forEach(record => {
+                const row = `${record.date},${record.cycles},${record.turns},${record.piecesRemoved},${record.totalPieces}\n`;
+                csvContent += row;
+            });
+
+            // Criando um link para download do arquivo CSV
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "registros.csv");
+            document.body.appendChild(link);
+
+            // Clicando no link para iniciar o download
+            link.click();
+        }
+    </script>
+</body>
+</html>
